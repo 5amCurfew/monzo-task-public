@@ -1,0 +1,5 @@
+dbt-env
+logs
+monzo_task/.dbt
+monzo_task/dbt_packages
+monzo_task/target
