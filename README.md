@@ -9,9 +9,8 @@ Create the virtual environment by running the following in your terminal:
 1. `python3 -m venv dbt-env`
 2. `source dbt-env/bin/activate`
 3. `python3 -m pip install -r requirements.txt`
-4. `dbt deps`
 
-Ensure `dbt` has been installed and activated correctly by running `dbt --version` in your terminal.
+Ensure `dbt` has been installed and activated correctly by running `dbt --version` in your terminal. If it has been successful, ensure you run `dbt deps` for installing dbt packages.
 ```bash
 Core:
   - installed: 1.3.2
@@ -32,7 +31,7 @@ dbt run --models stg_accounts_created --profiles-dir ./.dbt --full-refresh
 ```
 
 ```bash
-dbt test --profiles-dir ./.dbt --full-refresh
+dbt test --profiles-dir ./.dbt
 ```
 
 ## Database Environment
