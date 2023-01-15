@@ -162,6 +162,65 @@ The resulting model: `monzo_task.dim_users`
 3. Join on metadata on this spine
 4. Create fields `valid_from` and `valid_to` that reflect the period of an account in the given state. Note that these ranges should be *mutually exclusive* as this is what will be used later on event data such as `account_transactions`. This is ensure using a dbt test. Please see `_analytics_models.yml` for further information on the tests used.
 
+```SQL
+{{ config(
+    materialized="view",
+    tags=['monzo']
+)}}
+
+WITH account_meta AS (
+
+    SELECT
+        {{ dbt_utils.star(ref("stg_accounts_created"), except=["recorded_at"]) }}
+    FROM
+        {{ ref("stg_accounts_created") }}
+
+),
+
+spine AS (
+
+    SELECT DISTINCT
+        account_id,
+        recorded_at,
+        CAST('true' AS BOOLEAN) as is_open
+    FROM
+        {{ ref("stg_accounts_created") }}
+
+    UNION ALL
+
+    SELECT DISTINCT
+        account_id,
+        recorded_at,
+        CAST('false' AS BOOLEAN) as is_open
+    FROM
+        {{ ref("stg_accounts_closed") }}
+
+    UNION ALL
+
+    SELECT DISTINCT
+        account_id,
+        recorded_at,
+        CAST('true' AS BOOLEAN) as is_open
+    FROM
+        {{ ref("stg_accounts_reopened") }}
+    
+)
+
+SELECT
+    {{ dbt_utils.generate_surrogate_key(["spine.account_id", "spine.recorded_at"]) }} AS surrogate_key,
+    spine.account_id as natural_key,
+    spine.is_open,
+    {{ dbt_utils.star(ref("stg_accounts_created"), relation_alias='account_meta', except=["recorded_at", "account_id"]) }},
+    spine.recorded_at as valid_from,
+    COALESCE(LEAD(spine.recorded_at) OVER (PARTITION BY spine.account_id ORDER BY spine.recorded_at ASC), CURRENT_TIMESTAMP()) AS valid_to
+FROM
+    spine
+    INNER JOIN account_meta ON account_meta.account_id = spine.account_id
+ORDER BY
+    natural_key,
+    valid_from
+```
+
 Historical accuracy is ensured using this model (e.g. used in Task 2) given the state is explicitly followed. This model reflects *all* accounts (none are lost from the raw data).
 
 The model is documented in `monzo_task/models/analytics/_analytics_models.yml` that can then be viewed in the dbt-generated documentation:
