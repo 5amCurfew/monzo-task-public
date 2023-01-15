@@ -138,6 +138,7 @@ dbt test --profiles-dir ./.dbt
 
 ### Overview of Resulting Data Model
 
+![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/overview.png)
 
 ## Task 1: Accounts
 
@@ -209,3 +210,5 @@ The model is documented in `monzo_task/models/analytics/_analytics_models.yml` t
 `7d_active_users` represents the number of users that had *a transaction over the last running 7 days*, divided by all the users with at least one open account at that point. Monzo needs to be able to analyse the activity of our users (remember, one user can be active across multiple accounts). In particular, we are looking at a metric aptly named `7d_active_users` (defined above). The goal for this part is to build a data model that will enable analysts on the team to explore this data very quickly and without friction.
 
 ### Outcome
+
+![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/report_7d_active_users.png)
