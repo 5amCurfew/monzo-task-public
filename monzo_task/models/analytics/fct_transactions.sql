@@ -1,5 +1,6 @@
 {{ config(
     materialized="view",
+    tags=['monzo']
 )}}
 
 SELECT

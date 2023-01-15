@@ -145,7 +145,6 @@ In the previous stage I was asked which tools I would use to visualise a databas
 The resulting data model follows a Fact & Dimensions model, using SCD2 for both accounts and users. A report table is also introduced for Task 2. Naming and casting in the staging step (which I would typically separate into a different schema).
 
 ## Task 1: Accounts
-
 ### Task
 
 The business needs a very reliable and accurate data model that represents all the different accounts at Monzo. Your first task is to create a table using the existing data as outlined above. The most important requirements are that this model is accurate, complete, intuitive to use and well documented.
@@ -214,5 +213,85 @@ The model is documented in `monzo_task/models/analytics/_analytics_models.yml` t
 `7d_active_users` represents the number of users that had *a transaction over the last running 7 days*, divided by all the users with at least one open account at that point. Monzo needs to be able to analyse the activity of our users (remember, one user can be active across multiple accounts). In particular, we are looking at a metric aptly named `7d_active_users` (defined above). The goal for this part is to build a data model that will enable analysts on the team to explore this data very quickly and without friction.
 
 ### Outcome
+
+Please find the model below (dates are hard-coded for ease of development - in a production environment these would be dynamic)
+
+* the creation of `dim_users` following a similar structure to `dim_accounts` in Task 1
+* this allows for accuracy with respect to *"Users with only closed accounts should be excluded from the metric calculation.*
+* The creation of `first_created` on this model allow for cohort exploration (*"for example analyse the activity rate for certain age groups or for different signup cohorts (i.e. when the first account of this user was opened)."*)
+* Flexibility added using `+on_schema_change: "sync_all_columns"` in the incremental models for the possibility of new metadata being added (recall assumption that this will exist on `account_created` source table)
+* Filtering/exploration can be added using filtering in CTEs below
+
+```SQL
+{{ config(
+    materialized="view",
+)}}
+
+WITH spine AS (
+
+  SELECT 
+    CAST(day AS TIMESTAMP) as day
+  FROM 
+    UNNEST(GENERATE_DATE_ARRAY(DATE('2019-01-14'), DATE('2020-01-01'), INTERVAL 1 DAY)) as day
+
+),
+
+users_daily AS (
+
+  SELECT
+    spine.day,
+    dim_users.natural_key
+  FROM
+    spine
+    INNER JOIN monzo_task.dim_users ON dim_users.valid_from <= spine.day
+      AND dim_users.valid_to > spine.day
+      AND dim_users.open_account_total > 0
+
+),
+
+users_7d AS (
+
+  SELECT
+    spine.day as period_start,
+    COUNT(DISTINCT users_daily.natural_key) as total_users
+  FROM
+    spine
+    LEFT JOIN users_daily ON users_daily.day >= spine.day
+      AND users_daily.day < DATE_ADD(spine.day, INTERVAL 7 DAY)
+  GROUP BY
+    1
+
+),
+
+transactions_7d AS (
+
+  SELECT
+    spine.day as period_start,
+    COUNT(fct_transactions.unique_key) as total_transactions,
+    COUNT(DISTINCT dim_users.natural_key) as active_users
+  FROM
+    spine
+    LEFT JOIN monzo_task.fct_transactions ON fct_transactions.recorded_at >= spine.day
+      AND fct_transactions.recorded_at < DATE_ADD(spine.day, INTERVAL 7 DAY)
+    LEFT JOIN monzo_task.dim_users ON dim_users.surrogate_key = fct_transactions.user_surrogate_key
+  GROUP BY
+    1
+
+)
+
+SELECT
+  spine.day as period_start,
+  DATE_ADD(spine.day, INTERVAL 6 DAY) as period_end,
+  users_7d.total_users,
+  transactions_7d.active_users,
+  transactions_7d.total_transactions,
+  ROUND(CAST(active_users/total_users AS DECIMAL), 2) as active_users_7d
+FROM
+  spine
+  LEFT JOIN users_7d ON users_7d.period_start = spine.day
+  LEFT JOIN transactions_7d ON transactions_7d.period_start = spine.day
+ORDER BY
+  1
+```
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/report_7d_active_users.png)

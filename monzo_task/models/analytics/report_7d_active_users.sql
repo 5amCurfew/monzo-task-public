@@ -1,5 +1,6 @@
 {{ config(
     materialized="view",
+    tags=['monzo', 'report']
 )}}
 
 WITH spine AS (
@@ -18,7 +19,7 @@ users_daily AS (
     dim_users.natural_key
   FROM
     spine
-    INNER JOIN monzo_task.dim_users ON dim_users.valid_from <= spine.day
+    INNER JOIN {{ ref('dim_users') }} ON dim_users.valid_from <= spine.day
       AND dim_users.valid_to > spine.day
       AND dim_users.open_account_total > 0
 
@@ -46,9 +47,9 @@ transactions_7d AS (
     COUNT(DISTINCT dim_users.natural_key) as active_users
   FROM
     spine
-    LEFT JOIN monzo_task.fct_transactions ON fct_transactions.recorded_at >= spine.day
+    LEFT JOIN {{ ref('fct_transactions') }} ON fct_transactions.recorded_at >= spine.day
       AND fct_transactions.recorded_at < DATE_ADD(spine.day, INTERVAL 7 DAY)
-    LEFT JOIN monzo_task.dim_users ON dim_users.surrogate_key = fct_transactions.user_surrogate_key
+    LEFT JOIN {{ ref('dim_users') }} ON dim_users.surrogate_key = fct_transactions.user_surrogate_key
   GROUP BY
     1
 

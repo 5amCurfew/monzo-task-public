@@ -1,5 +1,6 @@
 {{ config(
     materialized="view",
+    tags=['monzo']
 )}}
 
 WITH account_meta AS (
