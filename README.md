@@ -138,7 +138,11 @@ dbt test --profiles-dir ./.dbt
 
 ### Overview of Resulting Data Model
 
+In the previous stage I was asked about which tools I would use to visualise a database schema. I also came across a post on the Monzo blog that using dbt generated documentation runs into issues given the scale of the the dbt project (4700+ models). I typically manually generate schema images in tools such as Miro. After the first-stage interview I thought a javascript tool that takes the `manifest.json` and visualises the resulting schema in a similar way might be useful to explore/build. I had a quick go at building this (not complete at the time of writing, Node.js used) and the output of my schema for this task is below.
+
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/overview.png)
+
+The resulting data model follows a Fact & Dimensions model, using SCD2 for both accounts and users. A report table is also introduced for Task 2. Naming and casting in the staging step (which I would typically separate into a different schema).
 
 ## Task 1: Accounts
 
