@@ -123,6 +123,7 @@ dbt test --profiles-dir ./.dbt
 ### Assumptions & Discoveries
  *"Each table is fully refreshed on a nightly basis from Monzo's append only logs"* suggests:
 
+* 66,666 rows have been used from `account_transactions` in this project (see Database Environment above)
 * existing data is immutable
 * That an *accounts* state is one of either *open* or *closed* and that the state of the account (e.g. its `type`) is not subject to change over its lifetime. This can also be seen using `select account_id_hashed, count(*) from monzo_task.account_created group by 1 order by 2 desc`
 * An account requires `user_id_hash` and is always *one-to-one*
