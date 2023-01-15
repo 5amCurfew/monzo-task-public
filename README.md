@@ -297,3 +297,70 @@ ORDER BY
 ```
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/report_7d_active_users.png)
+
+### Misc
+
+```bash
+(dbt-env) samuel.knight@SA00049-SamuelK monzo_task % dbt test --profiles-dir ./.dbt
+13:37:22  Running with dbt=1.3.2
+13:37:22  Found 7 models, 25 tests, 0 snapshots, 0 analyses, 431 macros, 0 operations, 4 seed files, 4 sources, 0 exposures, 0 metrics
+13:37:22
+13:37:23  Concurrency: 1 threads (target='dev')
+13:37:23
+13:37:23  1 of 25 START test dbt_utils_mutually_exclusive_ranges_dim_accounts_not_allowed__valid_from__natural_key__valid_to  [RUN]
+13:37:25  1 of 25 PASS dbt_utils_mutually_exclusive_ranges_dim_accounts_not_allowed__valid_from__natural_key__valid_to  [PASS in 2.46s]
+13:37:25  2 of 25 START test dbt_utils_mutually_exclusive_ranges_dim_users_not_allowed__valid_from__natural_key__valid_to  [RUN]
+13:37:28  2 of 25 PASS dbt_utils_mutually_exclusive_ranges_dim_users_not_allowed__valid_from__natural_key__valid_to  [PASS in 2.86s]
+13:37:28  3 of 25 START test not_null_dim_accounts_is_open ............................... [RUN]
+13:37:29  3 of 25 PASS not_null_dim_accounts_is_open ..................................... [PASS in 0.95s]
+13:37:29  4 of 25 START test not_null_dim_accounts_natural_key ........................... [RUN]
+13:37:31  4 of 25 PASS not_null_dim_accounts_natural_key ................................. [PASS in 1.51s]
+13:37:31  5 of 25 START test not_null_dim_accounts_surrogate_key ......................... [RUN]
+13:37:32  5 of 25 PASS not_null_dim_accounts_surrogate_key ............................... [PASS in 1.25s]
+13:37:32  6 of 25 START test not_null_dim_accounts_valid_from ............................ [RUN]
+13:37:33  6 of 25 PASS not_null_dim_accounts_valid_from .................................. [PASS in 1.45s]
+13:37:33  7 of 25 START test not_null_dim_accounts_valid_to .............................. [RUN]
+13:37:35  7 of 25 PASS not_null_dim_accounts_valid_to .................................... [PASS in 1.80s]
+13:37:35  8 of 25 START test not_null_dim_users_natural_key .............................. [RUN]
+13:37:37  8 of 25 PASS not_null_dim_users_natural_key .................................... [PASS in 2.24s]
+13:37:37  9 of 25 START test not_null_dim_users_surrogate_key ............................ [RUN]
+13:37:39  9 of 25 PASS not_null_dim_users_surrogate_key .................................. [PASS in 2.10s]
+13:37:39  10 of 25 START test not_null_dim_users_valid_from .............................. [RUN]
+13:37:41  10 of 25 PASS not_null_dim_users_valid_from .................................... [PASS in 1.94s]
+13:37:41  11 of 25 START test not_null_dim_users_valid_to ................................ [RUN]
+13:37:44  11 of 25 PASS not_null_dim_users_valid_to ...................................... [PASS in 2.69s]
+13:37:44  12 of 25 START test not_null_fct_transactions_unique_key ....................... [RUN]
+13:37:47  12 of 25 PASS not_null_fct_transactions_unique_key ............................. [PASS in 2.95s]
+13:37:47  13 of 25 START test not_null_stg_accounts_closed_account_id .................... [RUN]
+13:37:48  13 of 25 PASS not_null_stg_accounts_closed_account_id .......................... [PASS in 1.19s]
+13:37:48  14 of 25 START test not_null_stg_accounts_closed_recorded_at ................... [RUN]
+13:37:49  14 of 25 PASS not_null_stg_accounts_closed_recorded_at ......................... [PASS in 1.23s]
+13:37:49  15 of 25 START test not_null_stg_accounts_created_account_id ................... [RUN]
+13:37:50  15 of 25 PASS not_null_stg_accounts_created_account_id ......................... [PASS in 1.03s]
+13:37:50  16 of 25 START test not_null_stg_accounts_created_recorded_at .................. [RUN]
+13:37:51  16 of 25 PASS not_null_stg_accounts_created_recorded_at ........................ [PASS in 0.96s]
+13:37:51  17 of 25 START test not_null_stg_accounts_created_user_id ...................... [RUN]
+13:37:52  17 of 25 PASS not_null_stg_accounts_created_user_id ............................ [PASS in 0.91s]
+13:37:52  18 of 25 START test not_null_stg_accounts_reopened_account_id .................. [RUN]
+13:37:53  18 of 25 PASS not_null_stg_accounts_reopened_account_id ........................ [PASS in 0.83s]
+13:37:53  19 of 25 START test not_null_stg_accounts_reopened_recorded_at ................. [RUN]
+13:37:54  19 of 25 PASS not_null_stg_accounts_reopened_recorded_at ....................... [PASS in 1.06s]
+13:37:54  20 of 25 START test relationships_fct_transactions_account_surrogate_key__surrogate_key__ref_dim_accounts_  [RUN]
+13:37:57  20 of 25 PASS relationships_fct_transactions_account_surrogate_key__surrogate_key__ref_dim_accounts_  [PASS in 2.93s]
+13:37:57  21 of 25 START test relationships_fct_transactions_user_surrogate_key__surrogate_key__ref_dim_users_  [RUN]
+13:38:00  21 of 25 PASS relationships_fct_transactions_user_surrogate_key__surrogate_key__ref_dim_users_  [PASS in 2.90s]
+13:38:00  22 of 25 START test unique_dim_accounts_surrogate_key .......................... [RUN]
+13:38:01  22 of 25 PASS unique_dim_accounts_surrogate_key ................................ [PASS in 1.28s]
+13:38:01  23 of 25 START test unique_dim_users_surrogate_key ............................. [RUN]
+13:38:03  23 of 25 PASS unique_dim_users_surrogate_key ................................... [PASS in 1.86s]
+13:38:03  24 of 25 START test unique_fct_transactions_unique_key ......................... [RUN]
+13:38:06  24 of 25 PASS unique_fct_transactions_unique_key ............................... [PASS in 2.66s]
+13:38:06  25 of 25 START test unique_stg_accounts_created_account_id ..................... [RUN]
+13:38:07  25 of 25 PASS unique_stg_accounts_created_account_id ........................... [PASS in 1.17s]
+13:38:07
+13:38:07  Finished running 25 tests in 0 hours 0 minutes and 44.61 seconds (44.61s).
+13:38:07
+13:38:07  Completed successfully
+13:38:07
+13:38:07  Done. PASS=25 WARN=0 ERROR=0 SKIP=0 TOTAL=25
+```
