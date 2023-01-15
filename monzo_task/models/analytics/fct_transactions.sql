@@ -5,7 +5,7 @@
 SELECT
     {{ dbt_utils.generate_surrogate_key(["account_transactions.date", "account_transactions.account_id_hashed", "account_transactions.transactions_num"]) }} AS unique_key,
     CAST(account_transactions.date AS TIMESTAMP) as recorded_at,
-    account_transactions.account_id_hashed as account_id,
+    account_transactions.account_id_hashed as account_natural_key,
     account_transactions.transactions_num,
     dim_accounts.surrogate_key as account_surrogate_key,
     dim_users.surrogate_key as user_surrogate_key

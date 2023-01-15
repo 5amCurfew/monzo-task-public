@@ -48,7 +48,7 @@ transactions_7d AS (
     spine
     LEFT JOIN monzo_task.fct_transactions ON fct_transactions.recorded_at >= spine.day
       AND fct_transactions.recorded_at < DATE_ADD(spine.day, INTERVAL 7 DAY)
-    LEFT JOIN monzo_task.dim_users ON dim_users.surrogate_key = fct_transactions.users_surrogate_key
+    LEFT JOIN monzo_task.dim_users ON dim_users.surrogate_key = fct_transactions.user_surrogate_key
   GROUP BY
     1
 
