@@ -216,15 +216,17 @@ The model is documented in `monzo_task/models/analytics/_analytics_models.yml` t
 
 Please find the model below (dates are hard-coded for ease of development - in a production environment these would be dynamic)
 
-* the creation of `dim_users` following a similar structure to `dim_accounts` in Task 1
+* the creation of `dim_users` following a similar structure to `dim_accounts` in Task 1 (state w.r.t a user is the number of open accounts)
 * this allows for accuracy with respect to *"Users with only closed accounts should be excluded from the metric calculation.*
 * The creation of `first_created` on this model allow for cohort exploration (*"for example analyse the activity rate for certain age groups or for different signup cohorts (i.e. when the first account of this user was opened)."*)
 * Flexibility added using `+on_schema_change: "sync_all_columns"` in the incremental models for the possibility of new metadata being added (recall assumption that this will exist on `account_created` source table)
-* Filtering/exploration can be added using filtering in CTEs below
+* Filtering/exploration can be added using filtering in CTEs below (e.g. "users who joined Monzo in January, 2020": `AND date_trunc(dim_users.first_created, MONTH) = CAST('2020-01-01' AS TIMESTAMP)`)
+* A materalised example can be found in `report_7d_active_users.sql`
 
 ```SQL
 {{ config(
     materialized="view",
+    tags=['monzo', 'report']
 )}}
 
 WITH spine AS (
@@ -243,7 +245,7 @@ users_daily AS (
     dim_users.natural_key
   FROM
     spine
-    INNER JOIN monzo_task.dim_users ON dim_users.valid_from <= spine.day
+    INNER JOIN {{ ref('dim_users') }} ON dim_users.valid_from <= spine.day
       AND dim_users.valid_to > spine.day
       AND dim_users.open_account_total > 0
 
@@ -271,9 +273,9 @@ transactions_7d AS (
     COUNT(DISTINCT dim_users.natural_key) as active_users
   FROM
     spine
-    LEFT JOIN monzo_task.fct_transactions ON fct_transactions.recorded_at >= spine.day
+    LEFT JOIN {{ ref('fct_transactions') }} ON fct_transactions.recorded_at >= spine.day
       AND fct_transactions.recorded_at < DATE_ADD(spine.day, INTERVAL 7 DAY)
-    LEFT JOIN monzo_task.dim_users ON dim_users.surrogate_key = fct_transactions.user_surrogate_key
+    LEFT JOIN {{ ref('dim_users') }} ON dim_users.surrogate_key = fct_transactions.user_surrogate_key
   GROUP BY
     1
 
