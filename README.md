@@ -73,7 +73,7 @@ Connection:
   Connection test: [OK connection ok]
 ```
 
-The full `dbt` project can be found in the `monzo_task/` directory. It follows a suggested dbt patterns with the use of a *staging* step. This step is to write raw data and explicitly cast and rename fields for use later ("downstream").
+The full `dbt` project can be found in the `monzo_task/` directory. It follows suggested dbt patterns with the use of a *staging* step. This step is to write raw data and explicitly cast and rename fields for use later ("downstream").
 
 All *staging* tables are written incrementally (see assumptions below for reasoning). For example `stg_accounts_created`:
 ```SQL
@@ -136,9 +136,9 @@ dbt test --profiles-dir ./.dbt
 * No account closures from 2020-08-12 10:06:51.001000 UTC (discovery)
 * `transaction_num` is the transaction number of the account in the given day (`account_transactions.date`) on `account_transactions`
 
-### Overview of Resulting Data Model
+### Overview of Data Model
 
-In the previous stage I was asked about which tools I would use to visualise a database schema. I also came across a post on the Monzo blog that using dbt generated documentation runs into issues given the scale of the the dbt project (4700+ models). I typically manually generate schema images in tools such as Miro. After the first-stage interview I thought a javascript tool that takes the `manifest.json` and visualises the resulting schema in a similar way might be useful to explore/build. I had a quick go at building this (not complete at the time of writing, Node.js used) and the output of my schema for this task is below.
+In the previous stage I was asked which tools I would use to visualise a database schema. I read a post on the Monzo blog that stated using dbt generated documentation isn't feasible due to the scale of the the dbt project (4700+ models). I typically manually generate schema images in tools such as Miro. After the first-stage interview I thought a javascript tool that takes the `manifest.json` and visualises the resulting schema in a similar way might be useful to explore/build. I had a quick go at building this (not complete at the time of writing, Node.js used) and the output of my schema for this task is below.
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/overview.png)
 
