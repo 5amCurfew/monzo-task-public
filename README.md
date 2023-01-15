@@ -200,7 +200,7 @@ The model is documented in `monzo_task/models/analytics/_analytics_models.yml` t
           gaps: not_allowed
 ```
 
-
+![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/dim_accounts.png)
 
 ## Task 2: 7-day Active Users
 
