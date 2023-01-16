@@ -240,6 +240,14 @@ ORDER BY
 
 Historical accuracy is ensured using this model (e.g. used in Task 2) given the state is explicitly followed. This model reflects *all* accounts (none are lost from the raw data). Tests regarding uniqueness of the rows (using `surrogate_key`), mutually exclusive `valid_from/to` ranges with no gaps from initial account creation have been implemented using `dbt`.
 
+The potential for new metadata being introduced is captured by (for more information please see [this documentation](https://docs.getdbt.com/docs/build/incremental-models#what-if-the-columns-of-my-incremental-model-change))
+
+```yml
+models:
+  monzo_task:
+    +on_schema_change: "sync_all_columns"
+```
+
 The model is documented in `monzo_task/models/analytics/_analytics_models.yml` that can then be viewed in the dbt-generated documentation:
 ```yml
   - name: dim_accounts
