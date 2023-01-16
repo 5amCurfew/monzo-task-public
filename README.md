@@ -8,7 +8,7 @@
 - [Task 2: 7-day Active Users](#task-2--7-day-active-users)
   * [Task](#task-1)
   * [Outcome](#outcome-1)
-  * [Misc](#misc)
+- [Misc](#misc)
 
 ## Create `dbt` venv
 
@@ -406,7 +406,7 @@ ORDER BY
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/report_7d_active_users.png)
 
-### Misc
+## Misc
 
 ```bash
 (dbt-env) samuel.knight@SA00049-SamuelK monzo_task % dbt test --profiles-dir ./.dbt
