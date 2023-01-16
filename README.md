@@ -1,16 +1,16 @@
-- [Create `dbt` venv](#create--dbt--venv)
+- [Create dbt venv](#create-dbt-venv)
 - [Database Environment](#database-environment)
-  * [Assumptions & Discoveries](#assumptions---discoveries)
+  * [Assumptions](#assumptions)
   * [Overview of Data Model](#overview-of-data-model)
-- [Task 1: Accounts](#task-1--accounts)
+- [Task 1 Accounts](#task-1-accounts)
   * [Task](#task)
   * [Outcome](#outcome)
-- [Task 2: 7-day Active Users](#task-2--7-day-active-users)
+- [Task 2 7-day Active Users](#task-2-7-day-active-users)
   * [Task](#task-1)
   * [Outcome](#outcome-1)
 - [Misc](#misc)
 
-## Create `dbt` venv
+## Create dbt venv
 
 Ensure that Python is installed on your machine.
 
@@ -153,7 +153,7 @@ dbt run --models stg_accounts_created --profiles-dir ./.dbt --full-refresh
 dbt test --profiles-dir ./.dbt
 ```
 
-### Assumptions & Discoveries
+### Assumptions
  *"Each table is fully refreshed on a nightly basis from Monzo's append only logs"* suggests:
 
 * 66,666 rows have been used from `account_transactions` in this project (see Database Environment above)
@@ -178,7 +178,7 @@ In the previous stage I was asked which tools I would use to visualise a databas
 
 The resulting data model follows a Fact & Dimensions model, using SCD2 for both accounts and users. A report table is also introduced for Task 2. Naming and casting is explicit in the staging step (which I would typically separate into a different schema).
 
-## Task 1: Accounts
+## Task 1 Accounts
 ### Task
 
 The business needs a very reliable and accurate data model that represents all the different accounts at Monzo. Your first task is to create a table using the existing data as outlined above. The most important requirements are that this model is accurate, complete, intuitive to use and well documented.
@@ -307,7 +307,7 @@ The model is documented in `monzo_task/models/analytics/_analytics_models.yml` t
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/dim_accounts.png)
 
-## Task 2: 7-day Active Users
+## Task 2 7-day Active Users
 
 ### Task
 
