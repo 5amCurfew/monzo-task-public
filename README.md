@@ -1,3 +1,15 @@
+- [Create `dbt` venv](#create--dbt--venv)
+- [Database Environment](#database-environment)
+  * [Assumptions & Discoveries](#assumptions---discoveries)
+  * [Overview of Data Model](#overview-of-data-model)
+- [Task 1: Accounts](#task-1--accounts)
+  * [Task](#task)
+  * [Outcome](#outcome)
+- [Task 2: 7-day Active Users](#task-2--7-day-active-users)
+  * [Task](#task-1)
+  * [Outcome](#outcome-1)
+  * [Misc](#misc)
+
 ## Create `dbt` venv
 
 Ensure that Python is installed on your machine.
