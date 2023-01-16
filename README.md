@@ -309,7 +309,7 @@ Please find the model below (dates are hard-coded for ease of development - in a
 * this allows for accuracy with respect to *"Users with only closed accounts should be excluded from the metric calculation.*"
 * The creation of `first_created` on this model allow for cohort exploration (*"for example analyse the activity rate for certain age groups or for different signup cohorts (i.e. when the first account of this user was opened)."*)
 * Flexibility added using `+on_schema_change: "sync_all_columns"` in the incremental models for the possibility of new metadata being added (recall assumption that this will exist on `account_created` source table)
-* Filtering/exploration can be added using filtering in CTEs below (e.g. "users who joined Monzo in January, 2020": `AND date_trunc(dim_users.first_created, MONTH) = CAST('2020-01-01' AS TIMESTAMP)`)
+* Filtering/exploration can be added using filtering in CTEs below (e.g. "users who joined Monzo in January, 2020": `AND date_trunc(dim_users.first_created, MONTH) = CAST('2020-01-01' AS TIMESTAMP)` or "users with account type UK Retail": `AND dim_users.open_account_types ILIKE '%uk_retail%'`)
 * A materalised example can be found in `report_7d_active_users.sql`
 
 ```SQL
