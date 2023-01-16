@@ -312,6 +312,13 @@ Please find the model below (dates are hard-coded for ease of development - in a
 * Filtering/exploration can be added using filtering in CTEs below (e.g. "users who joined Monzo in January, 2020": `AND date_trunc(dim_users.first_created, MONTH) = CAST('2020-01-01' AS TIMESTAMP)` or "users with account type UK Retail": `AND dim_users.open_account_types ILIKE '%uk_retail%'`)
 * A materalised example can be found in `report_7d_active_users.sql`
 
+Logic is as follows:
+1. Create a spine of dates
+2. Find all users that had an open account on each day
+3. Count distinct users that had an open account that existed on at least one day within 7 days of the period start date (this creates the ceiling)
+4. Count the number of transactions, and number of distinct users making transactions within 7 days of period start date
+5. LEFT JOIN onto spine and calculate `7d_active_users`
+
 ```SQL
 {{ config(
     materialized="view",
