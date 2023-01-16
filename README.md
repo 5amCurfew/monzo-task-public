@@ -2,7 +2,7 @@
 
 Ensure that Python is installed on your machine.
 
-Locally I use `pyenv` as a python version manager. This project was built using Python 3.9.6. If you already use `pyenv` this will be set by the `.python_version` file.
+Locally I use `pyenv` as a python version manager. This project was built using Python 3.9.6. If you already use `pyenv` this will be set by the `.python_version` file when opening a terminal in this directory.
 
 Create the virtual environment by running the following in your terminal when in this directory:
 
@@ -10,15 +10,18 @@ Create the virtual environment by running the following in your terminal when in
 2. `source dbt-env/bin/activate`
 3. `python3 -m pip install -r requirements.txt`
 
-Running `which dbt` once the virtual environment is activated should point to the version then installed:
+Running `which dbt` once the virtual environment is activated should point to the version then installed. For example:
+
 ```bash
-which dbt
-<YOUR_DIRECTORY_LOCATION>/monzo-task/dbt-env/bin/dbt
+samuel.knight@SA00049-SamuelK monzo-task-public % source dbt-env/bin/activate
+(dbt-env) samuel.knight@SA00049-SamuelK monzo-task-public % which dbt
+/Users/samuel.knight/git/monzo-task-public/dbt-env/bin/dbt
 ```
 
-Ensure `dbt` has been installed and activated correctly by running `dbt --version` in your terminal. If it has been successful, ensure you run `dbt deps` for installing dbt packages.
+Ensure `dbt` has been installed and activated correctly by running `dbt --version` in your terminal. If it has been successful, move into the `monzo_task/` and run `dbt deps` for installing dbt packages used in this project. Your output should mirror:
 
 ```bash
+(dbt-env) samuel.knight@SA00049-SamuelK monzo-task-public % dbt --version
 Core:
   - installed: 1.3.2
   - latest:    1.3.2 - Up to date!
@@ -26,28 +29,39 @@ Core:
 Plugins:
   - bigquery: 1.3.0 - Up to date!
 ```
-## Database Environment
 
-Following some difficulties regarding credentials and access in the shared `analytics-take-home-test` project on GCP I have exported results of the tables
+```bash
+(dbt-env) samuel.knight@SA00049-SamuelK monzo-task-public % cd monzo_task
+(dbt-env) samuel.knight@SA00049-SamuelK monzo_task % dbt deps
+Running with dbt=1.3.2
+Installing dbt-labs/dbt_utils
+  Installed from version 1.0.0
+  Up to date!
+```
+
+## Database Environment
 
 * `monzo_datawarehouse.account_closed`
 * `monzo_datawarehouse.account_created`
 * `monzo_datawarehouse.account_reopened`
 * `monzo_datawarehouse.account_transactions`
 
-and written the data to tables in a personal Google Cloud project `dbt-monzo-task` using `dbt seed --profiles-dir ./.dbt` where the `dbt` profile is using a `service-account` with credentials stored in `dbt-monzo-task-credentials.json`. Data modelling will be implemented using this project throughout.
+This dbt project has been materialised in a personal (samueltobyknight@gmail.com) Google Cloud Project named `dbt-monzo-task`. All models have been materialised in the `monzo_task` dataset (i.e. schema).
 
-Please create `monzo_task/.dbt` mirroring the `monzo_task/.dbt_template` to create your own access credentials and run this project. The `keyfile` can be generated using the Google Cloud Console. Check your connection is valid using `dbt debug` when in the `monzo_task/` directory that contains the dbt project. Your output should reflect similar to below if succcessful.
+Exports from the `monzo_datawarehouse` dataset provided were loaded into this project using `dbt seed --profiles-dir ./.dbt` where the `dbt` profile is using a `service-account` with credentials stored in `dbt-monzo-task-credentials.json`. Data modelling will be implemented using this project throughout (note an export of 66,666 transactions are used).
+
+To mirror this set up please create `monzo_task/.dbt` that reflects the `monzo_task/.dbt_template` to create your own access credentials and run this project in your desired GCP project. The `keyfile` can be generated and exported using the Google Cloud Console. Check your connection is valid using `dbt debug --profiles-dir ./.dbt` when in the `monzo_task/` directory that contains the dbt project. Your output should be similar to below if succcessful.
 
 ```bash
-dbt debug --profiles-dir ./.dbt
-11:48:15  Running with dbt=1.3.2
+(dbt-env) samuel.knight@SA00049-SamuelK monzo-task-public % cd monzo_task
+(dbt-env) samuel.knight@SA00049-SamuelK monzo_task % dbt debug --profiles-dir ./.dbt
+12:59:32  Running with dbt=1.3.2
 dbt version: 1.3.2
 python version: 3.9.6
-python path: /Users/samuel.knight/git/monzo-task/dbt-env/bin/python3
+python path: /Users/samuel.knight/git/monzo-task-public/dbt-env/bin/python3
 os info: macOS-10.16-x86_64-i386-64bit
-Using profiles.yml file at /Users/samuel.knight/git/monzo-task/monzo_task/.dbt/profiles.yml
-Using dbt_project.yml file at /Users/samuel.knight/git/monzo-task/monzo_task/dbt_project.yml
+Using profiles.yml file at /Users/samuel.knight/git/monzo-task-public/monzo_task/.dbt/profiles.yml
+Using dbt_project.yml file at /Users/samuel.knight/git/monzo-task-public/monzo_task/dbt_project.yml
 
 Configuration:
   profiles.yml file [OK found and valid]
@@ -71,6 +85,8 @@ Connection:
   job_execution_timeout_seconds: 300
   gcs_bucket: None
   Connection test: [OK connection ok]
+
+All checks passed!
 ```
 
 The full `dbt` project can be found in the `monzo_task/` directory. It follows suggested dbt patterns with the use of a *staging* step. This step is to write raw data and explicitly cast and rename fields for use later ("downstream").
@@ -106,7 +122,7 @@ WITH source as (
 SELECT * FROM source
 ```
 
-Examples:
+`dbt` command examples (for more information please see the [dbt documentation](https://docs.getdbt.com/docs/introduction)):
 
 ```bash
 dbt seed --profiles-dir ./.dbt
@@ -125,25 +141,25 @@ dbt test --profiles-dir ./.dbt
 
 * 66,666 rows have been used from `account_transactions` in this project (see Database Environment above)
 * existing data is immutable
-* That an *accounts* state is one of either *open* or *closed* and that the state of the account (e.g. its `type`) is not subject to change over its lifetime. This can also be seen using `select account_id_hashed, count(*) from monzo_task.account_created group by 1 order by 2 desc`
+* An *accounts* state is one of either *open* or *closed* and that the state of the account (e.g. its `type`) is not subject to change over its lifetime. This can also be seen using `select account_id_hashed, count(*) from monzo_task.account_created group by 1 order by 2 desc`
 * An account requires `user_id_hash` and is always *one-to-one*
 * Further metadata will be appended at the `account_created` data source
 * An account can be closed an infinite amount of times without being reopened (discovered) but only created once. An account must have been created to be closed/reopened.
 * `account_type` is not required (2 instances where `account_type` is `null`) (discovery)
 * `user_id_hashed` is required
 * Building models incrementally will capture all rows (*append only*) as it is suggested this mirrors event data
-* Hard-deletes do not occur (accounts remain in a closed state)
+* Hard-deletes do not occur (accounts remain in a *closed* state)
 * transactions can only exist for accounts that have been created
 * No account closures from 2020-08-12 10:06:51.001000 UTC (discovery)
 * `transaction_num` is the transaction number of the account in the given day (`account_transactions.date`) on `account_transactions`
 
 ### Overview of Data Model
 
-In the previous stage I was asked which tools I would use to visualise a database schema. I read a post on the Monzo blog that stated using dbt generated documentation isn't feasible due to the scale of the the dbt project (4700+ models). I typically manually generate schema images in tools such as Miro. After the first-stage interview I thought a javascript tool that takes the `manifest.json` and visualises the resulting schema in a similar way might be useful to explore/build. I had a quick go at building this (not complete at the time of writing, Node.js used) and the output of my schema for this task is below.
+In the previous stage I was asked which tools I would use to visualise a database schema. I read a post on the Monzo blog that stated using dbt generated documentation isn't feasible due to the scale of the the dbt project (4700+ models). I typically manually generate schema images in tools such as Miro. After the first-stage interview I thought a Javascript tool that reads the `manifest.json` and visualises the resulting schema in a similar way might be useful to explore/build. I had a quick go at building this (not complete at the time of writing, Node.js used) and the output of my schema for this task is below.
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/overview.png)
 
-The resulting data model follows a Fact & Dimensions model, using SCD2 for both accounts and users. A report table is also introduced for Task 2. Naming and casting in the staging step (which I would typically separate into a different schema).
+The resulting data model follows a Fact & Dimensions model, using SCD2 for both accounts and users. A report table is also introduced for Task 2. Naming and casting is explicit in the staging step (which I would typically separate into a different schema).
 
 ## Task 1: Accounts
 ### Task
@@ -160,7 +176,7 @@ The resulting model: `monzo_task.dim_users`
 
 1. Create a CTE that contains the metadata of an account (this is found on `stg_accounts_created` and assumed the metadata - namely `user_id` and `account_type` doesn't change)
 2. Build a *spine* CTE of each account update (for each `account_id_hashed` find each update - creation, closure and re-opening) using the commonly named `recorded_at` in the *staging* tables
-3. Join on metadata on this spine
+3. Join on metadata on this spine (assumed this does not change for the purpose of the task)
 4. Create fields `valid_from` and `valid_to` that reflect the period of an account in the given state. Note that these ranges should be *mutually exclusive* as this is what will be used later on event data such as `account_transactions`. This is ensure using a dbt test. Please see `_analytics_models.yml` for further information on the tests used.
 
 ```SQL
@@ -222,7 +238,7 @@ ORDER BY
     valid_from
 ```
 
-Historical accuracy is ensured using this model (e.g. used in Task 2) given the state is explicitly followed. This model reflects *all* accounts (none are lost from the raw data).
+Historical accuracy is ensured using this model (e.g. used in Task 2) given the state is explicitly followed. This model reflects *all* accounts (none are lost from the raw data). Tests regarding uniqueness of the rows (using `surrogate_key`), mutually exclusive `valid_from/to` ranges with no gaps from initial account creation have been implemented using `dbt`.
 
 The model is documented in `monzo_task/models/analytics/_analytics_models.yml` that can then be viewed in the dbt-generated documentation:
 ```yml
