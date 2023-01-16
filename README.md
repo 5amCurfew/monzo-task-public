@@ -30,13 +30,18 @@ Plugins:
   - bigquery: 1.3.0 - Up to date!
 ```
 
+(Note that it might require activating the virtual environment again following `cd monzo_task`)
+
 ```bash
 (dbt-env) samuel.knight@SA00049-SamuelK monzo-task-public % cd monzo_task
+(dbt-env) samuel.knight@SA00049-SamuelK monzo_task % source ../dbt-env/bin/activate
+(dbt-env) samuel.knight@SA00049-SamuelK monzo_task % which dbt
+/Users/samuel.knight/git/monzo-task-public/dbt-env/bin/dbt
 (dbt-env) samuel.knight@SA00049-SamuelK monzo_task % dbt deps
-Running with dbt=1.3.2
-Installing dbt-labs/dbt_utils
-  Installed from version 1.0.0
-  Up to date!
+13:21:29  Running with dbt=1.3.2
+13:21:30  Installing dbt-labs/dbt_utils
+13:21:30    Installed from version 1.0.0
+13:21:30    Up to date!
 ```
 
 ## Database Environment
