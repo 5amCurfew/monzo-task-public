@@ -406,6 +406,26 @@ ORDER BY
 
 ![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/report_7d_active_users.png)
 
+## Orchestrate with Airflow
+
+In my previous interview we spoke about Airflow as the tool for orchestration. Following this I have also implemented a solution to automate (daily) the suggested data model above.
+
+Prerequisites: both [Docker](https://docs.docker.com/) and [Make](https://www.gnu.org/software/make/manual/make.html) installed.
+
+To run:
+
+```bash
+make start
+```
+
+This will build the container (defined in the `Dockerfile`) and then subsequently start up the Airflow server (using the entry point `init.sh`). Following a successful start-up the airflow webser ver can be viewed at `http://localhost:8080`.
+
+For more information the dag `scheduled_dbt_daily` is written in the `dags` directory.
+
+Example:
+
+![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/airflow.png)
+
 ## Misc
 
 ```bash
