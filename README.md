@@ -8,6 +8,7 @@
 - [Task 2 7-day Active Users](#task-2-7-day-active-users)
   * [Task](#task-1)
   * [Outcome](#outcome-1)
+- [Orchestrate with Airflow](#orchestrate-with-airflow)
 - [Misc](#misc)
 
 ## Create dbt venv
@@ -408,7 +409,7 @@ ORDER BY
 
 ## Orchestrate with Airflow
 
-In my previous interview we spoke about Airflow as the tool for orchestration. Following this I have also implemented a solution to automate (daily) the suggested data model above.
+In my previous interview we spoke about Airflow as the tool for orchestration. Following this I have also implemented a solution to automate (daily) the suggested data model above using Docker.
 
 Prerequisites: both [Docker](https://docs.docker.com/) and [Make](https://www.gnu.org/software/make/manual/make.html) installed.
 
@@ -418,7 +419,7 @@ To run:
 make start
 ```
 
-This will build the container (defined in the `Dockerfile`) and then subsequently start up the Airflow server (using the entry point `init.sh` - this reflects steps explained above). Following a successful start-up the airflow webserver can be viewed at `http://localhost:8080`.
+This will build the container (defined in the `Dockerfile`) and then subsequently install dbt and Airflow in addition to initiating the Airflow server (the entry point `init.sh` reflects the steps explained in the [Create dbt venv](#create-dbt-venv) when setting up the project locally). Following a successful set-up the airflow webserver can be viewed at `http://localhost:8080`.
 
 For more information the dag `scheduled_dbt_daily` is written in the `dags` directory.
 
