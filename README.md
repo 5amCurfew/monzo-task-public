@@ -424,7 +424,7 @@ For more information the dag `scheduled_dbt_daily` is written in the `dags` dire
 
 Example:
 
-![alt text](https://github.com/5amCurfew/monzo-task-public/blob/main/img/airflow.png)
+![alt text](https://github.com/5amCurfew/monzo-task-public/blob/airflow/img/airflow.png)
 
 ## Misc
 
