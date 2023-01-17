@@ -418,7 +418,7 @@ To run:
 make start
 ```
 
-This will build the container (defined in the `Dockerfile`) and then subsequently start up the Airflow server (using the entry point `init.sh`). Following a successful start-up the airflow webser ver can be viewed at `http://localhost:8080`.
+This will build the container (defined in the `Dockerfile`) and then subsequently start up the Airflow server (using the entry point `init.sh` - this reflects steps explained above). Following a successful start-up the airflow webserver can be viewed at `http://localhost:8080`.
 
 For more information the dag `scheduled_dbt_daily` is written in the `dags` directory.
 
