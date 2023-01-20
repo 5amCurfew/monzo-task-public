@@ -188,9 +188,9 @@ After implementing the model, please outline five of the most important tests th
 
 ### Outcome
 
-The resulting model: `monzo_task.dim_users`
+The resulting model: `monzo_task.dim_accounts`
 
-`dim_users` is a slowly-changing-type2 (for more information check out [Kimball docs here](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/)) dimension of *accounts* at Monzo. Each row represents an account and the corresponding state (either open or closed). Logical steps to build this model are as follows:
+`dim_accounts` is a slowly-changing-type2 (for more information check out [Kimball docs here](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/)) dimension of *accounts* at Monzo. Each row represents an account and the corresponding state (either open or closed). Logical steps to build this model are as follows:
 
 1. Create a CTE that contains the metadata of an account (this is found on `stg_accounts_created` and assumed the metadata - namely `user_id` and `account_type` doesn't change)
 2. Build a *spine* CTE of each account update (for each `account_id_hashed` find each update - creation, closure and re-opening) using the commonly named `recorded_at` in the *staging* tables
